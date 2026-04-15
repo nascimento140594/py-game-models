@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from typing import Any
 
+import init_django_orm  # noqa: F401
 from db.models import Guild, Player, Race, Skill
 
 
@@ -10,16 +11,17 @@ def _extract_players(data: Any) -> list[dict[str, Any]]:
         return [item for item in data if isinstance(item, dict)]
 
     if isinstance(data, dict):
-        if "players" in data and isinstance(data["players"], list):
-            return [item for item in data["players"] if isinstance(item, dict)]
+        players = data.get("players")
+        if isinstance(players, list):
+            return [item for item in players if isinstance(item, dict)]
 
-        players: list[dict[str, Any]] = []
+        extracted_players: list[dict[str, Any]] = []
         for nickname, player_data in data.items():
             if isinstance(player_data, dict):
                 normalized_player = dict(player_data)
                 normalized_player.setdefault("nickname", nickname)
-                players.append(normalized_player)
-        return players
+                extracted_players.append(normalized_player)
+        return extracted_players
 
     return []
 
@@ -120,3 +122,7 @@ def main() -> None:
                 "guild": guild,
             },
         )
+
+
+if __name__ == "__main__":
+    main()
