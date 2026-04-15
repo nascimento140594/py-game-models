@@ -21,6 +21,7 @@ def _extract_players(data: Any) -> list[dict[str, Any]]:
                 normalized_player = dict(player_data)
                 normalized_player.setdefault("nickname", nickname)
                 extracted_players.append(normalized_player)
+
         return extracted_players
 
     return []
